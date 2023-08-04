@@ -17,7 +17,9 @@ os.system('chcp 65001')  # кодіровка термінала віндовс 
 
 # Сегмент коду який відповідає за створення БД
 
-con = sqlite3.connect("filters.db")  # створили БД
+# створюємо БД
+con = sqlite3.connect("filters.db")  
+# створюємо курсор
 cur = con.cursor()  # створив курсор
 cur.execute("CREATE TABLE IF NOT EXISTS key (name,key1,key2,key3)")
 cur.execute("CREATE TABLE IF NOT EXISTS way (npp, dir)")
@@ -51,9 +53,6 @@ class MyWin(QtWidgets.QMainWindow):
 
         con.close
 
-    def test(self):
-        path = r"D:\phyton\obuchenie\mother_work-projeckt\листи 2010-2022\Листування у 2020\08-0221-20 Описка в назві.docx"
-        print(self.find_number_of_name_file('08-0221-20 Описка в назві.docx'))
 
     def create_fin_list(self):
         con = sqlite3.connect("filters.db")
