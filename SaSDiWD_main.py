@@ -13,14 +13,14 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from Main_Window import *
 from datetime import datetime
 
-os.system('chcp 65001')  # кодіровка термінала віндовс для відкриття
+os.system('chcp 65001')  # Windows terminal encoding
 
-# Сегмент коду який відповідає за створення БД
+# The code segment responsible for creating the database
 
-# створюємо БД
+# Create a database
 con = sqlite3.connect("filters.db")  
-# створюємо курсор
-cur = con.cursor()  # створив курсор
+# cCreate a cursor
+cur = con.cursor()
 cur.execute("CREATE TABLE IF NOT EXISTS key (name,key1,key2,key3)")
 cur.execute("CREATE TABLE IF NOT EXISTS way (npp, dir)")
 con.close
@@ -55,6 +55,9 @@ class MyWin(QtWidgets.QMainWindow):
 
 
     def create_fin_list(self):
+        '''
+        The function creates a list of all emails in the folder that meet the filter conditions
+        '''
         con = sqlite3.connect("filters.db")
         cur = con.cursor()
         cur.execute("DELETE  FROM way")
@@ -95,7 +98,10 @@ class MyWin(QtWidgets.QMainWindow):
             None
         cur.close
 
-    def get_text_from_word_file(self, path):  # Получення повного текту з файла
+    def get_text_from_word_file(self, path):
+        '''
+        The function removes a tecta from a file
+        '''
         document = docx.Document(path)
         fullText = []
         for para in document.paragraphs:
@@ -103,7 +109,10 @@ class MyWin(QtWidgets.QMainWindow):
         Text = '/n'.join(fullText)
         return Text
 
-    def find_number_of_name_file(self, filename):   # Пошу номерів лістів
+    def find_number_of_name_file(self, filename):
+        '''
+        The function searches for contract numbers in Word files
+        '''
         names_list = []
         letter_index = re.compile(
             r'(\d\d-\d\d\d\d-\d\d-\d\d)|(\d\d-\d\d\d\d-\d\d)|(\d\d-\d\d-\d\d)|(\d\d-\d\d-\d\d)|(\d\d-\d\d) ')
@@ -116,6 +125,9 @@ class MyWin(QtWidgets.QMainWindow):
         return str(names_list)
 
     def find_keyword_in_files(self, Text):  # Пошук по ключевим словам
+        '''
+        The function searches word files by keywords
+        '''
         filter_name = self.ui.comboBox.currentText()
         con = sqlite3.connect("filters.db")  # створили БД
         cur = con.cursor()  # створив курсор
@@ -132,7 +144,9 @@ class MyWin(QtWidgets.QMainWindow):
             return None
 
     def create_new_filter(self):
-
+        '''
+        The function creates a new filter for searching
+        '''
         name_filter = self.ui.lineEdit.text()
         kerword1 = self.ui.lineEdit_2.text()
         ketword2 = self.ui.lineEdit_3.text()
@@ -169,12 +183,18 @@ class MyWin(QtWidgets.QMainWindow):
                 con.close()
 
     def open_folder(self):  # відкритя потрібної теки з файлами
+        '''
+        The function opens the window for selecting the desired folder
+        '''
         self.directory = QtWidgets.QFileDialog.getExistingDirectory(self)
         self.ui.label_2.setText(f'Пошук у теці: {self.directory}')
 
     
 
     def open_file(self):
+        '''
+        The function opens the selected word file
+        '''
         info = self.ui.listWidget_2.currentItem().text()
         info_list = str(info).split()
         number = tuple(info_list[:1])
@@ -189,7 +209,9 @@ class MyWin(QtWidgets.QMainWindow):
         con.close
 
     def delete_filter(self):
-
+         '''
+         The function deletes the selected filter
+         '''
         try:
             selected = self.ui.listWidget.currentItem().text()
             list_selected = []
@@ -214,12 +236,15 @@ class MyWin(QtWidgets.QMainWindow):
             return None
 
     def last_modification_date(self, path):
+        '''
+        The function returns the date of the last modification file 
+        '''
         mod_data = str(datetime.fromtimestamp(os.path.getmtime(path)))
         mod_data = mod_data[:19]
         return mod_data
 
 
-# точка входу
+# Entry point
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     myapp = MyWin()
